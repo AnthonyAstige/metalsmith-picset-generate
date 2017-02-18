@@ -2,7 +2,7 @@
 
 Generates image sets for use with [metalsmith-picset-handlebars-helper](https://github.com/AnthonyAstige/metalsmith-picset-handlebars-helper) to give browsers choice
 
-### Use
+## Use
 
 `npm i metalsmith-picset-generate --save`
 
@@ -22,7 +22,7 @@ Name files like
   1. Param 3: jpg quality (1-100)
   1. Param 4: Image widths (Comma seperated integers)
 
-### Effect
+## Effect
 
 This plugin will generate images
 
@@ -33,9 +33,9 @@ This plugin will generate images
 * Following a convention like {name}-{width}.{ext}
 * Removes original image
 
-### Metalsmith Options
+## Metalsmith Options
 
-#### Options Object
+### Options Object
 
 ```
 {
@@ -48,10 +48,10 @@ This plugin will generate images
 * Relative to **source** folder
 * Default: `img/picsets/`
 
-### Implementation
+## Implementation
 
 Uses [sharp](https://github.com/lovell/sharp) for image generation
 
-### Philosophy
+## Philosophy
 
 [Convention over Configuration](https://en.wikipedia.org/wiki/Convention_over_configuration)
