@@ -22,3 +22,7 @@ Name files like
 ### Effect
 
 This plugin will generate web
+
+### Implementation
+
+Uses [sharp](https://github.com/lovell/sharp) for image generation
