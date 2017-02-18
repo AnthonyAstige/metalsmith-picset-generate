@@ -47,7 +47,7 @@ This plugin will generate images
 
 * In original format
 * In `.webp` format
-* At sizes and qualities specified
+* At widths and qualities specified
 * At the specified `path`
 * Following a convention like {name}-{width}.{ext}
 * Removes original image
