@@ -1,3 +1,5 @@
+# CURRENTLY IN DEVELOPMENT - NOT YET READY FOR USE
+
 Generates responsive image sets for use with [metalsmith-picset-handlebars-helper](https://github.com/AnthonyAstige/metalsmith-picset-handlebars-helper) to give browsers image resolution choices
 
 ### Use
