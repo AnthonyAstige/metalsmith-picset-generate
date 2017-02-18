@@ -9,8 +9,9 @@ Generates image sets for use with [metalsmith-picset-handlebars-helper](https://
 ```
 const picsetGenerate = require(metalsmith-picset-generate)
 Metalsmith(__dirname)
-	.use(picsetGenerate({path: '/img/picsets/'}))
-	.build(function() {})
+	...
+	.use(picsetGenerate())
+	...
 ```
 Name files like
 
@@ -30,6 +31,22 @@ This plugin will generate images
 * At sizes and qualities specified
 * At the specified `path`
 * Following a convention like {name}-{width}.{ext}
+* Removes original image
+
+### Metalsmith Options
+
+#### Options Object
+
+```
+{
+	path: 'img/picsets'
+}
+```
+
+**path**
+
+* Relative to **source** folder
+* Default: `img/picsets/`
 
 ### Implementation
 
