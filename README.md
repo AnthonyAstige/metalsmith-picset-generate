@@ -66,4 +66,5 @@ This plugin will generate images
 
 ### Implementation
 
-Uses [sharp](https://github.com/lovell/sharp) for image generation because [sharp is fast](http://sharp.dimens.io/en/stable/performance/#results)
+* Uses [sharp](https://github.com/lovell/sharp) for image generation because [sharp is fast](http://sharp.dimens.io/en/stable/performance/#results)
+* Implemented on Node v6.9.1, untested in other versions
