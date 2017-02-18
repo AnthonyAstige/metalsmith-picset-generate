@@ -13,7 +13,7 @@ Metalsmith(__dirname)
 Name files like
 
  1. Human: `{name}_{quality#}webp_{quality#}jpg_{w1#},{w2#},{...},{wn#}.ext`
- 1. RegEx: `/([a-Z]*)_([0-9](1,2))webp_([0-9](1,2))jpg_\([[0-9]+,]+\).[jpg|png|svg]/`
+ 1. RegEx: `/([a-Z\-]*)_([0-9](1,2))webp_([0-9](1,2))jpg_\([[0-9]+,]+\).[jpg|png|svg]/`
   1. Param 1: Prefix (a-Z)
   1. Param 2: webp quality (1-100)
   1. Param 3: jpg quality (1-100)
