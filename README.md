@@ -32,3 +32,7 @@ This plugin will generate images
 ### Implementation
 
 Uses [sharp](https://github.com/lovell/sharp) for image generation
+
+### Philosophy
+
+[Convention over Configuration](https://en.wikipedia.org/wiki/Convention_over_configuration)
