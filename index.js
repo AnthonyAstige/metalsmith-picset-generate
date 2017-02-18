@@ -1,4 +1,5 @@
 const _ = require('lodash')
+// const sharp = require('sharp')
 
 function plugin(opts) {
 	return function(files, metalsmith, done) {
