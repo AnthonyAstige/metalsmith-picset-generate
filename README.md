@@ -45,7 +45,7 @@ This plugin will generate images
 
 **path**
 
-* Relative to **source** folder
+* Relative to Metalsmith **source** folder
 * Default: `img/picsets/`
 
 ## Implementation
