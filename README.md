@@ -54,10 +54,16 @@ This plugin will generate images
 
 ## Background info
 
+### Philosophy &amp; architecture
+
+* [Convention over Configuration](https://en.wikipedia.org/wiki/Convention_over_configuration)
+* Image generation placed on file level instead of helper level
+ * Generate once, use multiple times throughout site if desired
+ * More likely to get cache hits by keeping standard file generation sizes on re-use
+* Seperate plugin for stages
+ * Seperation of concerns (re-usable, if say someone wants to implement another templating engine solution than handlebars)
+ * The Metalsmith way
+
 ### Implementation
 
-Uses [sharp](https://github.com/lovell/sharp) for image generation
-
-### Philosophy
-
-[Convention over Configuration](https://en.wikipedia.org/wiki/Convention_over_configuration)
+Uses [sharp](https://github.com/lovell/sharp) for image generation because [sharp is fast](http://sharp.dimens.io/en/stable/performance/#results)
