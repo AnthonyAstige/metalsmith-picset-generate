@@ -8,7 +8,7 @@ Generates responsive image sets for use with [metalsmith-picset-handlebars-helpe
 const picsetGenerate = require(metalsmith-picset-generate)
 Metalsmith(__dirname)
 	.use(picsetGenerate({path: '/img/picsets/'}))
-	.build(function(err) {})
+	.build(function() {})
 ```
 Name files like
 
