@@ -2,7 +2,9 @@
 
 Generates image sets for use with [metalsmith-picset-handlebars-helper](https://github.com/AnthonyAstige/metalsmith-picset-handlebars-helper) to give browsers choice
 
-## Use
+## How to use
+
+Add to your pipeline like
 
 `npm i metalsmith-picset-generate --save`
 
@@ -13,7 +15,7 @@ Metalsmith(__dirname)
 	.use(picsetGenerate())
 	...
 ```
-Name files like
+Place images in your source folder under `/src/picsets` named like so
 
  1. Human: `{name}_{quality#}webp_{quality#}jpg_{w1#},{w2#},{...},{wn#}.ext`
  1. RegEx: `/([a-Z\-]*)_([0-9](1,2))webp_([0-9](1,2))jpg_\([[0-9]+,]+\).[jpg|png|svg]/`
@@ -22,20 +24,11 @@ Name files like
   1. Param 3: jpg quality (1-100)
   1. Param 4: Image widths (Comma seperated integers)
 
-## Effect
+And images will be generated relative to your source folder in /img/picsets/
 
-This plugin will generate images
+## Specification
 
-* In original format
-* In `.webp` format
-* At sizes and qualities specified
-* At the specified `path`
-* Following a convention like {name}-{width}.{ext}
-* Removes original image
-
-## Metalsmith Options
-
-### Options Object
+### Metalsmith options object
 
 ```
 {
@@ -48,10 +41,23 @@ This plugin will generate images
 * Relative to Metalsmith **source** folder
 * Default: `img/picsets/`
 
-## Implementation
+### Output
+
+This plugin will generate images
+
+* In original format
+* In `.webp` format
+* At sizes and qualities specified
+* At the specified `path`
+* Following a convention like {name}-{width}.{ext}
+* Removes original image
+
+## Background info
+
+### Implementation
 
 Uses [sharp](https://github.com/lovell/sharp) for image generation
 
-## Philosophy
+### Philosophy
 
 [Convention over Configuration](https://en.wikipedia.org/wiki/Convention_over_configuration)
