@@ -37,11 +37,11 @@ Note: All examples will generate images with the name `anthony` at widths of 100
 
 Comma seperated list of integers for widths of output images
 
-**webp** - .webp quality (Default: 80)
+**webp** - .webp quality (Default: Set in plugin `use()` call or 80)
 
 A integer from 1-100 indicating webp quality (lossy compression). A value of 100 indicated lossless quality.
 
-**jpg** - .jpg quality (Default: 80)
+**jpg** - .jpg quality (Default: Set in plugin `use()` call or 80)
 
 An integer from 1-100 indicating jpg quality (lossy compression).
 
