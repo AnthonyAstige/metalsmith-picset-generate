@@ -83,6 +83,8 @@ function plugin(options) {
 		// TODO: Make buffer processing finish...this is messing up timers
 		// TODO: * It looks like this plugin finishes in 7[ms] when it's like 300[ms]
 		// TODO: ** Which will presumably get worse the more files we're processing
+		// TODO: * It's also I think a race condition, if not finished in time no images?
+		// TODO: * I try going back to the toFile temp file reading and output method?
 		const promise = s.toBuffer((err, buffer, info) => {
 			if (err) {
 				throw err
