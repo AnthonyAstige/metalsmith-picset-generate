@@ -54,7 +54,7 @@ function plugin(options) {
 		return params
 	}
 
-	// Inserts new image into Metalsmith `files` object following `params`:
+	// Returns promise to insert new image into Metalsmith `files` object with `params`:
 	// * name: Image filename prefix
 	// * width: How wide the image should be
 	// * ext: What file extension the image should be
@@ -63,7 +63,7 @@ function plugin(options) {
 		const newname = `${params.name}-${params.width}.${params.ext}`
 		const newpath = `${opts.path}/${newname}`
 
-		// Create promise to create new file
+		// Resize the image and put in appropriate format / quality
 		let s = sharp(params.buffer).resize(params.width)
 		switch (params.ext) {
 			case 'png':
@@ -80,28 +80,25 @@ function plugin(options) {
 				break
 		}
 
-		// TODO: Make buffer processing finish...this is messing up timers
-		// TODO: * It looks like this plugin finishes in 7[ms] when it's like 300[ms]
-		// TODO: ** Which will presumably get worse the more files we're processing
-		// TODO: * It's also I think a race condition, if not finished in time no images?
-		// TODO: * I try going back to the toFile temp file reading and output method?
-		const promise = s.toBuffer((err, buffer, info) => {
-			if (err) {
-				throw err
-			}
-			files[newpath] = { contents: buffer }
+		// Return promise to actually create the buffer as new Metalsmith file
+		return new Promise((resolve, reject) => {
+			s.toBuffer((err, buffer, info) => {
+				if (err) {
+					reject(err)
+				}
+				files[newpath] = { contents: buffer }
+				resolve()
+			})
 		})
-
-		return promise
 	}
 
 	return function(files, metalsmith, done) {
-		const promises = []
+		const promisesToCreateImages = []
 		const removeFilenames = []
 
 		_.forEach(files, (file, filename) => {
 			if (picPattern.test(filename)) {
-				// Make not to remove original file when we're all done
+				// Mark to remove original file when we're done
 				removeFilenames.push(filename)
 
 				// Gather params from filename
@@ -115,8 +112,8 @@ function plugin(options) {
 
 				/* eslint-disable no-inner-declarations*/
 				function createNTrack(customOpts) {
-					// Track ensure promise is done
-					promises.push(
+					// Track ensure promise is fulfilled
+					promisesToCreateImages.push(
 						// Create the image
 						createImage(
 							// Add new image buffer to files
@@ -152,7 +149,9 @@ function plugin(options) {
 			}
 		})
 
-		Promise.all(promises).then((data) => {
+		// Ensure all promised fulfilled before we complete
+		// * Prevents race condition where buffers aren't done before Metalsmith is
+		Promise.all(promisesToCreateImages).then((data) => {
 			// Remove original file so they don't show up in build
 			_.forEach(removeFilenames, (filename) => {
 				delete files[filename]
