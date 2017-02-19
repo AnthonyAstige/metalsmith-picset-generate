@@ -71,6 +71,9 @@ function plugin(options) {
 					break
 			}
 
+			// TODO: Make buffer processing finish...this is messing up timers
+			// TODO: * It looks like this plugin finishes in 7[ms] when it's more like 300[ms]
+			// TODO: ** Which will presumably get worse the more files we're processing
 			const promise = s.toBuffer((err, buffer, info) => {
 				if (err) {
 					throw err
