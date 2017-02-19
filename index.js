@@ -56,39 +56,48 @@ function plugin(options) {
 		}
 		const promises = []
 		const removeFilenames = []
+
+		function createImage(buffer, width, params) {
+			const newname = `${params.name}-${width}.${params.ext}`
+			const newpath = `${opts.path}/${newname}`
+			const tmppath = `${tmpdir}/${newname}`
+
+			// Create promise to create new file
+			let s = sharp(buffer).resize(width)
+			switch (params.ext) {
+				case 'png':
+					s = s.png()
+					break
+				case 'jpg':
+					s = s.jpeg({ quality: params.jpg })
+					break
+			}
+			// TODO: Change to toBuffer and stop messing around with temp files
+			// TODO: * Could speed up runtime and simplify code
+			const promise = s.toFile(tmppath)
+
+			// Once file is written, read it in
+			Promise.all([promise]).then((buff) => {
+				files[newpath] = { contents: fs.readFileSync(tmppath) }
+				fs.unlink(tmppath)
+			})
+
+			// Make note of promise (we later have to ensure all are done)
+			// TODO: Remove use of external vars..
+			promises.push(promise)
+		}
+
 		_.forEach(files, (file, filename) => {
 			if (picPattern.test(filename)) {
+				// Make not to remove original file when we're all done
 				removeFilenames.push(filename)
+
+				// Gather params from filename
 				const params = imagenameParams(filename)
 
 				// Images for every width
 				_.forEach(params.w, (width) => {
-					const newname = `${params.name}-${width}.${params.ext}`
-					const newpath = `${opts.path}/${newname}`
-					const tmppath = `${tmpdir}/${newname}`
-
-					// Create promise to resize image
-					let s = sharp(`${metalsmith._source}/${filename}`).resize(width)
-					switch (params.ext) {
-						case 'png':
-							s = s.png()
-							break
-						case 'jpg':
-							s = s.jpeg({ quality: params.jpg })
-							break
-					}
-					// TODO: Change to toBuffer and stop messing around with temp files
-					// TODO: * Could speed up runtime and simplify code
-					const promise = s.toFile(tmppath)
-
-					// Once file is written, read it in
-					Promise.all([promise]).then((buffer) => {
-						files[newpath] = { contents: fs.readFileSync(tmppath) }
-						fs.unlink(tmppath)
-					})
-
-					// Make note of promise (we later have to ensure all are done)
-					promises.push(promise)
+					createImage(file.contents, width, params)
 				})
 			}
 		})
