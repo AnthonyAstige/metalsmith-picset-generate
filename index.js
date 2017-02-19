@@ -98,57 +98,59 @@ function plugin(options) {
 		const removeFilenames = []
 
 		_.forEach(files, (file, filename) => {
-			if (picPattern.test(filename)) {
-				// Mark to remove original file when we're done
-				removeFilenames.push(filename)
-
-				// Gather params from filename
-				const params = imagenameParams(filename, picPattern, reParam, opts)
-
-				// Set default params for new image
-				const defs = {
-					buffer: file.contents,
-					name: params.name
-				}
-
-				/* eslint-disable no-inner-declarations*/
-				function createNTrack(customOpts) {
-					// Track ensure promise is fulfilled
-					promisesToCreateImages.push(
-						// Create the image
-						createImage(
-							// Add new image buffer to files
-							files,
-							_.assignIn(
-								// Options always the same
-								defs,
-								// Passed in options
-								customOpts
-							),
-							opts
-						)
-					)
-				}
-				/* eslint-enable no-inner-declarations*/
-
-				// Images for every width
-				_.forEach(params.w, (width) => {
-					defs.width = width
-
-					// Render every image in webp
-					createNTrack({ ext: 'webp', quality: params.webp })
-
-					// Render every image in it's original format
-					switch (params.ext) {
-						case 'jpg':
-							createNTrack({ ext: 'jpg', quality: params.jpg })
-							break
-						case 'png':
-							createNTrack({ ext: 'png' })
-							break
-					}
-				})
+			if (!picPattern.test(filename)) {
+				return
 			}
+
+			// Mark to remove original file when we're done
+			removeFilenames.push(filename)
+
+			// Gather params from filename
+			const params = imagenameParams(filename, picPattern, reParam, opts)
+
+			// Set default params for new image
+			const defs = {
+				buffer: file.contents,
+				name: params.name
+			}
+
+			/* eslint-disable no-inner-declarations*/
+			function createNTrack(customOpts) {
+				// Track ensure promise is fulfilled
+				promisesToCreateImages.push(
+					// Create the image
+					createImage(
+						// Add new image buffer to files
+						files,
+						_.assignIn(
+							// Options always the same
+							defs,
+							// Passed in options
+							customOpts
+						),
+						opts
+					)
+				)
+			}
+			/* eslint-enable no-inner-declarations*/
+
+			// Images for every width
+			_.forEach(params.w, (width) => {
+				defs.width = width
+
+				// Render every image in webp
+				createNTrack({ ext: 'webp', quality: params.webp })
+
+				// Render every image in it's original format
+				switch (params.ext) {
+					case 'jpg':
+						createNTrack({ ext: 'jpg', quality: params.jpg })
+						break
+					case 'png':
+						createNTrack({ ext: 'png' })
+						break
+				}
+			})
 		})
 
 		// Ensure all promised fulfilled before we complete
