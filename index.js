@@ -72,7 +72,7 @@ function plugin(options) {
 			}
 
 			// TODO: Make buffer processing finish...this is messing up timers
-			// TODO: * It looks like this plugin finishes in 7[ms] when it's more like 300[ms]
+			// TODO: * It looks like this plugin finishes in 7[ms] when it's like 300[ms]
 			// TODO: ** Which will presumably get worse the more files we're processing
 			const promise = s.toBuffer((err, buffer, info) => {
 				if (err) {
@@ -81,9 +81,7 @@ function plugin(options) {
 				files[newpath] = { contents: buffer }
 			})
 
-			// Make note of promise (we later have to ensure all are done)
-			// TODO: Remove use of external vars..
-			promises.push(promise)
+			return promise
 		}
 
 		_.forEach(files, (file, filename) => {
@@ -105,16 +103,18 @@ function plugin(options) {
 					defs.width = width
 
 					// Render every image in webp
-					createImage(_.assignIn(defs, { ext: 'webp', quality: params.webp }))
+					promises.push(createImage(
+						_.assignIn(defs, { ext: 'webp', quality: params.webp })))
 
 					// Render every image in it's original format
 					switch (params.ext) {
 						case 'jpg':
-							createImage(
-								_.assignIn(defs, { ext: 'jpg', quality: params.jpg }))
+							promises.push(createImage(
+								_.assignIn(defs, { ext: 'jpg', quality: params.jpg })))
 							break
 						case 'png':
-							createImage(_.assignIn(defs, { ext: 'png' }))
+							promises.push(
+								createImage(_.assignIn(defs, { ext: 'png' })))
 							break
 					}
 				})
