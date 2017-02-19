@@ -45,20 +45,35 @@ A integer from 1-100 indicating webp quality (lossy compression). A value of 100
 
 An integer from 1-100 indicating jpg quality (lossy compression).
 
-### Metalsmith options object
+### Metalsmith options
+
+#### Metalsmith options: Example object
 
 ```javascript
 {
-	path: 'img/picset'
+	path: 'img/picset',
+	jpg: 80,
+	webp: 80
 }
 ```
 
-**path**
+Which would place all images in `img/picset` with a default quality of 80 for both jpg and webp files
+
+#### Metalsmith options: Specifics
+
+**path** - images location (Default: `img/picset/`)
 
 Place all your source images here. They should be high quality and high resolution.
 
 * Relative to Metalsmith **source** folder
-* Default: `img/picset/`
+
+**jpg** - Default jpg quality (Default: 80)
+
+Default jpg quality if left unspecified in file name
+
+**webp** - Default webp quality (Default: 80)
+
+Default wbep quality if left unspecified in file name
 
 ### Output
 

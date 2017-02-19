@@ -8,6 +8,12 @@ function plugin(options) {
 	if (!opts.path) {
 		opts.path = 'img/picset'
 	}
+	if (!opts.jpg) {
+		opts.jpg = 80
+	}
+	if (!opts.webp) {
+		opts.webp = 80
+	}
 
 	// Regular Expression filename variables
 	const reParam = '_[0-9,]+[a-z]+'
@@ -41,7 +47,7 @@ function plugin(options) {
 		}
 
 		// Add in default file params
-		const defaults = { jpg: 80, webp: 80 }
+		const defaults = { jpg: opts.jpg, webp: opts.webp }
 		params = _.assignIn(defaults, params)
 
 		// Return constructed params object
