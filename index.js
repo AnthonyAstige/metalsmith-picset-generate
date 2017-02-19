@@ -3,7 +3,6 @@
 // TODO: Refactor this whole thing as needed, code reviewing, ...
 const _ = require('lodash')
 const sharp = require('sharp')
-const fs = require('fs')
 
 function plugin(options) {
 	const opts = options || {}
@@ -51,17 +50,12 @@ function plugin(options) {
 	}
 
 	return function(files, metalsmith, done) {
-		const tmpdir = `${metalsmith._destination}/.metalsmith-picset-generate-tmp`
-		if (!fs.existsSync(tmpdir)) {
-			fs.mkdirSync(tmpdir)
-		}
 		const promises = []
 		const removeFilenames = []
 
 		function createImage(params) {
 			const newname = `${params.name}-${params.width}.${params.ext}`
 			const newpath = `${opts.path}/${newname}`
-			const tmppath = `${tmpdir}/${newname}`
 
 			// Create promise to create new file
 			let s = sharp(params.buffer).resize(params.width)
@@ -76,14 +70,12 @@ function plugin(options) {
 					s = s.webp({ quality: params.quality })
 					break
 			}
-			// TODO: Change to toBuffer and stop messing around with temp files
-			// TODO: * Could speed up runtime and simplify code
-			const promise = s.toFile(tmppath)
 
-			// Once file is written, read it in
-			Promise.all([promise]).then((buff) => {
-				files[newpath] = { contents: fs.readFileSync(tmppath) }
-				fs.unlink(tmppath)
+			const promise = s.toBuffer((err, buffer, info) => {
+				if (err) {
+					throw err
+				}
+				files[newpath] = { contents: buffer }
 			})
 
 			// Make note of promise (we later have to ensure all are done)
