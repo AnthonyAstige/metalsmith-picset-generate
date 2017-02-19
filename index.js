@@ -116,17 +116,12 @@ function plugin(options) {
 
 			/* eslint-disable no-inner-declarations*/
 			function createNTrack(customOpts) {
-				// Track ensure promise is fulfilled
 				promisesToCreateImages.push(
-					// Create the image
 					createImage(
-						// Add new image buffer to files
-						files,
+						files,			// Add new image buffer to files
 						_.assignIn(
-							// Options always the same
-							defs,
-							// Passed in options
-							customOpts
+							defs,		// Options always the same
+							customOpts	// Passed in options
 						),
 						opts
 					)
