@@ -148,7 +148,7 @@ module.exports = (options) => {
 			})
 		})
 
-		// Ensure all promised fulfilled before we complete
+		// Ensure all promises fulfilled before we complete
 		// * Prevents race condition where buffers aren't done before Metalsmith is
 		Promise.all(promisesToCreateImages).then((data) => {
 			// Remove original file so they don't show up in build
