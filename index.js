@@ -1,9 +1,9 @@
 /* eslint-disable no-sync */
-// TODO: Refactor this whole thing as needed, code reviewing, ...
 const _ = require('lodash')
 const sharp = require('sharp')
 
 function plugin(options) {
+	// Options and defaults
 	const opts = options || {}
 	if (!opts.path) {
 		opts.path = 'img/picset'
@@ -151,7 +151,7 @@ function plugin(options) {
 		})
 
 		Promise.all(promises).then((data) => {
-			// Remove original file so doesn't show up in build
+			// Remove original file so they don't show up in build
 			_.forEach(removeFilenames, (filename) => {
 				delete files[filename]
 			})
