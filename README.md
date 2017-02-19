@@ -6,7 +6,9 @@ Generates image sets for use with [metalsmith-picset-handlebars-helper](https://
 
 Add to your pipeline like
 
-`npm i metalsmith-picset-generate --save`
+```sh
+npm i metalsmith-picset-generate --save
+```
 
 ```javascript
 const picsetGenerate = require(metalsmith-picset-generate)
