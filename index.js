@@ -73,7 +73,10 @@ function plugin(options) {
 				s = s.jpeg({ quality: params.quality })
 				break
 			case 'webp':
-				s = s.webp({ quality: params.quality })
+				s = s.webp({
+					quality: params.quality,
+					lossless: (100 === params.quality)
+				})
 				break
 		}
 

@@ -39,7 +39,9 @@ Comma seperated list of integers for widths of output images
 
 **webp** - .webp quality (Default: Set in plugin `use()` call or 80)
 
-A integer from 1-100 indicating webp quality (lossy compression). A value of 100 indicated lossless quality.
+A integer from 1-100 indicating webp quality (lossy compression).
+
+* A value of 100 will trigger use of lossless compression mode
 
 **jpg** - .jpg quality (Default: Set in plugin `use()` call or 80)
 
