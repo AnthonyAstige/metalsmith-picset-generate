@@ -40,9 +40,9 @@ function imagenameParams(imagename, picPattern, reParam, opts) {
 // * width: How wide the image should be
 // * ext: What file extension the image should be
 // * quality: What quality the image should be (For .jpg & .webp)
-function createImage(files, params, opts) {
+function createImage(files, params, path) {
 	const newname = `${params.name}-${params.width}.${params.ext}`
-	const newpath = `${opts.path}/${newname}`
+	const newpath = `${path}/${newname}`
 
 	// Resize the image and put in appropriate format / quality
 	let s = sharp(params.buffer).resize(params.width)
@@ -123,7 +123,7 @@ function plugin(options) {
 							defs,		// Options always the same
 							customOpts	// Passed in options
 						),
-						opts
+						opts.path		// Where to create the Metalsmith file
 					)
 				)
 			}
