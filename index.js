@@ -8,29 +8,33 @@ function plugin(options) {
 		opts.path = 'img/picset'
 	}
 
-	// TODO: Isolate these variable from global scope better?
-	const name = '[a-zA-Z-]*'
-	const param = '_[0-9,]+[a-z]+'
-	const ext = 'jpg|png|svg'
-	const picPattern = new RegExp(`${opts.path}/(${name})(${param})*\\.(${ext})`)
+	// Regular Expression filename variables
+	const reParam = '_[0-9,]+[a-z]+'
+	const reName = '[a-zA-Z-]*'
+	const reExt = 'jpg|png|svg'
+	const picPattern = new RegExp(`${opts.path}/(${reName})(${reParam})*\\.(${reExt})`)
 
 	// Returns an object with params from file following pattern defined in README.md
 	function imagenameParams(imagename) {
 		// Non-repeating params
-		const basics = imagename.match(picPattern)
-		const params = {
-			name: basics[1],
-			ext: basics[3]
+		const basicParams = imagename.match(picPattern)
+		let params = {
+			name: basicParams[1],
+			ext: basicParams[3]
 		}
 
 		// Repeating params
-		const paramPattern = new RegExp(`${param}`, 'g')
+		const paramPattern = new RegExp(`${reParam}`, 'g')
 		let auxParam
 		while ((auxParam = paramPattern.exec(imagename)) !== null) {
 			const paramName = auxParam[0].match(/[a-z]+/)[0]
 			const paramValue = auxParam[0].match(/[0-9,]+/)[0]
 			params[paramName] = paramValue
 		}
+
+		// Add in default file params
+		const defaults = { jpg: 80, webp: 80 }
+		params = _.assignIn(defaults, params)
 
 		// Return constructed params object
 		return params
