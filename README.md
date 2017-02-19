@@ -15,7 +15,7 @@ Metalsmith(__dirname)
 	.use(picsetGenerate())
 	...
 ```
-Place images in your source folder under `/src/picsets` named like so
+Place images in your source folder under `/src/picset` named like so
 
  1. Human: `{name}_{quality#}webp_{quality#}jpg_{w1#},{w2#},{...},{wn#}.ext`
  1. RegEx: `/([a-Z\-]*)_([0-9](1,2))webp_([0-9](1,2))jpg_\([[0-9]+,]+\).[jpg|png|svg]/`
@@ -24,7 +24,7 @@ Place images in your source folder under `/src/picsets` named like so
   1. Param 3: jpg quality (1-100)
   1. Param 4: Image widths (Comma seperated integers)
 
-And images will be generated relative to your source folder in /img/picsets/
+And images will be generated relative to your source folder in /img/picset/
 
 ## Specification
 
@@ -32,14 +32,14 @@ And images will be generated relative to your source folder in /img/picsets/
 
 ```
 {
-	path: 'img/picsets'
+	path: 'img/picset'
 }
 ```
 
 **path**
 
 * Relative to Metalsmith **source** folder
-* Default: `img/picsets/`
+* Default: `img/picset/`
 
 ### Output
 
