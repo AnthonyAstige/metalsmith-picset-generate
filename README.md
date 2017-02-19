@@ -1,5 +1,3 @@
-# CURRENTLY IN DEVELOPMENT - NOT YET READY FOR USE
-
 Generates image sets for use with [metalsmith-picset-handlebars-helper](https://github.com/AnthonyAstige/metalsmith-picset-handlebars-helper) to give browsers choice
 
 ## Example use
