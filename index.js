@@ -49,6 +49,11 @@ function plugin(options) {
 		return params
 	}
 
+	// Inserts new image into Metalsmith `files` object following `params`:
+	// * name: Image filename prefix
+	// * width: How wide the image should be
+	// * ext: What file extension the image should be
+	// * quality: What quality the image should be (For .jpg & .webp)
 	function createImage(files, params) {
 		const newname = `${params.name}-${params.width}.${params.ext}`
 		const newpath = `${opts.path}/${newname}`
