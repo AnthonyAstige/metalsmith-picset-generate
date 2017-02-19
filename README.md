@@ -2,13 +2,11 @@
 
 Generates image sets for use with [metalsmith-picset-handlebars-helper](https://github.com/AnthonyAstige/metalsmith-picset-handlebars-helper) to give browsers choice
 
-## How to use
+## Example use
 
 Add to your pipeline like
 
-```sh
-npm i metalsmith-picset-generate --save
-```
+`npm i metalsmith-picset-generate --save`
 
 ```javascript
 const picsetGenerate = require(metalsmith-picset-generate)
@@ -17,18 +15,35 @@ Metalsmith(__dirname)
 	.use(picsetGenerate())
 	...
 ```
-Place images in your source folder under `/src/picset` named like so
+Place `picture.jpg` in your source folder under `/img/picset/`
 
- 1. Human: `{name}_{quality#}webp_{quality#}jpg_{w1#},{w2#},{...},{wn#}.ext`
- 1. RegEx: `/([a-Z\-]*)_([0-9](1,2))webp_([0-9](1,2))jpg_\([[0-9]+,]+\).[jpg|png|svg]/`
-  1. Param 1: Prefix (a-Z)
-  1. Param 2: webp quality (1-100)
-  1. Param 3: jpg quality (1-100)
-  1. Param 4: Image widths (Comma seperated integers)
-
-And images will be generated relative to your source folder in /img/picset/
+And images will be generated relative to your source folder in `/img/picset/``
 
 ## Specification
+
+### Image naming
+
+Image size generation is done by naming convention with parameters denoted by the `_{NUMBERS}{PARAM}`. Examples:
+
+Note: All examples will generate images with the name `anthony` at widths of 100px, 200px, and 400px
+
+1. `anthony_400,200,100w.jpg` - Name is **anthony**, file type is **jpg**
+1. `anthony_400,200,100w_65jpg.jpg` - Name is **anthony**, jpeg quality is **65**%, file type is **jpg**
+1. `anthony_400,200,100w_65jpg_50webp.jpg` - Name is **anthony**, jpeg quality is **65**%, webp quality is **55%**, file type is **jpg**
+
+#### Image naming: parameters
+
+**w** - Image widths (**Required**)
+
+Comma seperated list of integers for widths of output images
+
+**webp** - .webp quality (Default: 80)
+
+A integer from 1-100 indicating webp quality (lossy compression). A value of 100 indicated lossless quality.
+
+**jpg** - .jpg quality (Default: 80)
+
+An integer from 1-100 indicating jpg quality (lossy compression).
 
 ### Metalsmith options object
 
@@ -39,6 +54,8 @@ And images will be generated relative to your source folder in /img/picset/
 ```
 
 **path**
+
+Place all your source images here. They should be high quality and high resolution.
 
 * Relative to Metalsmith **source** folder
 * Default: `img/picset/`
