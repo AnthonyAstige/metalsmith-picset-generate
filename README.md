@@ -8,7 +8,7 @@ Add to your pipeline like
 
 `npm i metalsmith-picset-generate --save`
 
-```
+```javascript
 const picsetGenerate = require(metalsmith-picset-generate)
 Metalsmith(__dirname)
 	...
@@ -30,7 +30,7 @@ And images will be generated relative to your source folder in /img/picset/
 
 ### Metalsmith options object
 
-```
+```javascript
 {
 	path: 'img/picset'
 }
