@@ -1,4 +1,3 @@
-/* eslint-disable max-statements */
 /* eslint-disable no-sync */
 // TODO: Refactor this whole thing as needed, code reviewing, ...
 const _ = require('lodash')
