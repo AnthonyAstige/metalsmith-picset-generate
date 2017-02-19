@@ -26,6 +26,12 @@ It will build to appropriate formats / widths under `/img/picset/`
 
 ## Specification
 
+### Image types
+
+Accepts `.png` and `.jpg` as input.
+
+Outputs `.webp` and the input image type.
+
 ### Image naming
 
 Image size generation is done by naming convention with parameters denoted by the `_{NUMBERS}{PARAM}`. Examples:
