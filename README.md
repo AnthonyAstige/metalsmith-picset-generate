@@ -15,7 +15,7 @@ Metalsmith(__dirname)
 ```
 Under your source folder place an image `/img/picset/picture_400,200,100w.jpg`
 
-And on run the image will be replaced in your build folder with images at appropriate width like so:
+It will build to appropriate formats / widths under `/img/picset/`
 
 * `picture-100.jpg`
 * `picture-100.webp`
