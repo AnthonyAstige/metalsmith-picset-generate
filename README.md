@@ -13,9 +13,9 @@ Metalsmith(__dirname)
 	.use(picsetGenerate())
 	...
 ```
-Place `picture_400,200,100w.jpg` in your source folder under `/img/picset/`
+Under your source folder place an image `/img/picset/picture_400,200,100w.jpg`
 
-And images will be generated relative to your source folder in `/img/picset/` with widths of 100, 200, and 400 like so:
+And on run the image will be replaced in your build folder with images at appropriate width like so:
 
 * `picture-100.jpg`
 * `picture-100.webp`
