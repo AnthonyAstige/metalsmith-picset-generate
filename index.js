@@ -49,40 +49,40 @@ function plugin(options) {
 		return params
 	}
 
+	function createImage(files, params) {
+		const newname = `${params.name}-${params.width}.${params.ext}`
+		const newpath = `${opts.path}/${newname}`
+
+		// Create promise to create new file
+		let s = sharp(params.buffer).resize(params.width)
+		switch (params.ext) {
+			case 'png':
+				s = s.png()
+				break
+			case 'jpg':
+				s = s.jpeg({ quality: params.quality })
+				break
+			case 'webp':
+				s = s.webp({ quality: params.quality })
+				break
+		}
+
+		// TODO: Make buffer processing finish...this is messing up timers
+		// TODO: * It looks like this plugin finishes in 7[ms] when it's like 300[ms]
+		// TODO: ** Which will presumably get worse the more files we're processing
+		const promise = s.toBuffer((err, buffer, info) => {
+			if (err) {
+				throw err
+			}
+			files[newpath] = { contents: buffer }
+		})
+
+		return promise
+	}
+
 	return function(files, metalsmith, done) {
 		const promises = []
 		const removeFilenames = []
-
-		function createImage(params) {
-			const newname = `${params.name}-${params.width}.${params.ext}`
-			const newpath = `${opts.path}/${newname}`
-
-			// Create promise to create new file
-			let s = sharp(params.buffer).resize(params.width)
-			switch (params.ext) {
-				case 'png':
-					s = s.png()
-					break
-				case 'jpg':
-					s = s.jpeg({ quality: params.quality })
-					break
-				case 'webp':
-					s = s.webp({ quality: params.quality })
-					break
-			}
-
-			// TODO: Make buffer processing finish...this is messing up timers
-			// TODO: * It looks like this plugin finishes in 7[ms] when it's like 300[ms]
-			// TODO: ** Which will presumably get worse the more files we're processing
-			const promise = s.toBuffer((err, buffer, info) => {
-				if (err) {
-					throw err
-				}
-				files[newpath] = { contents: buffer }
-			})
-
-			return promise
-		}
 
 		_.forEach(files, (file, filename) => {
 			if (picPattern.test(filename)) {
@@ -103,18 +103,18 @@ function plugin(options) {
 					defs.width = width
 
 					// Render every image in webp
-					promises.push(createImage(
+					promises.push(createImage(files,
 						_.assignIn(defs, { ext: 'webp', quality: params.webp })))
 
 					// Render every image in it's original format
 					switch (params.ext) {
 						case 'jpg':
-							promises.push(createImage(
+							promises.push(createImage(files,
 								_.assignIn(defs, { ext: 'jpg', quality: params.jpg })))
 							break
 						case 'png':
-							promises.push(
-								createImage(_.assignIn(defs, { ext: 'png' })))
+							promises.push(files,
+								createImage(files, _.assignIn(defs, { ext: 'png' })))
 							break
 					}
 				})
