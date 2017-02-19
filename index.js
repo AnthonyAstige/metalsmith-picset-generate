@@ -103,23 +103,39 @@ function plugin(options) {
 					name: params.name
 				}
 
+				/* eslint-disable no-inner-declarations*/
+				function createNTrack(customOpts) {
+					// Track ensure promise is done
+					promises.push(
+						// Create the image
+						createImage(
+							// Add new image buffer to files
+							files,
+							_.assignIn(
+								// Options always the same
+								defs,
+								// Passed in options
+								customOpts
+							)
+						)
+					)
+				}
+				/* eslint-enable no-inner-declarations*/
+
 				// Images for every width
 				_.forEach(params.w, (width) => {
 					defs.width = width
 
 					// Render every image in webp
-					promises.push(createImage(files,
-						_.assignIn(defs, { ext: 'webp', quality: params.webp })))
+					createNTrack({ ext: 'webp', quality: params.webp })
 
 					// Render every image in it's original format
 					switch (params.ext) {
 						case 'jpg':
-							promises.push(createImage(files,
-								_.assignIn(defs, { ext: 'jpg', quality: params.jpg })))
+							createNTrack({ ext: 'jpg', quality: params.jpg })
 							break
 						case 'png':
-							promises.push(files,
-								createImage(files, _.assignIn(defs, { ext: 'png' })))
+							createNTrack({ ext: 'png' })
 							break
 					}
 				})
