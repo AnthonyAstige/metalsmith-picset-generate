@@ -34,7 +34,7 @@ Note: All examples will generate images with the name `anthony` at widths of 100
 
 1. `anthony_400,200,100w.jpg` - Name is **anthony**, file type is **jpg**
 1. `anthony_400,200,100w_65jpg.jpg` - Name is **anthony**, jpeg quality is **65**%, file type is **jpg**
-1. `anthony_400,200,100w_65jpg_50webp.jpg` - Name is **anthony**, jpeg quality is **65**%, webp quality is **55%**, file type is **jpg**
+1. `anthony_400,200,100w_65jpg_50webp.jpg` - Name is **anthony**, jpeg quality is **65**%, webp quality is **50%**, file type is **jpg**
 
 #### Image naming: parameters
 
