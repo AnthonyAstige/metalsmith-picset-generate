@@ -73,7 +73,7 @@ function createImage(files, params, path) {
 	})
 }
 
-function plugin(options) {
+module.exports = (options) => {
 	// Options and defaults
 	const opts = options || {}
 	if (!opts.path) {
@@ -161,5 +161,3 @@ function plugin(options) {
 		})
 	}
 }
-
-module.exports = plugin
