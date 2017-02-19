@@ -1,6 +1,8 @@
 /* eslint-disable max-statements */
+/* eslint-disable no-sync */
 const _ = require('lodash')
 const sharp = require('sharp')
+const fs = require('fs')
 
 function plugin(options) {
 	const opts = options || {}
@@ -11,7 +13,7 @@ function plugin(options) {
 	// Regular Expression filename variables
 	const reParam = '_[0-9,]+[a-z]+'
 	const reName = '[a-zA-Z-]*'
-	const reExt = 'jpg|png|svg'
+	const reExt = 'jpg|png'
 	const picPattern = new RegExp(`${opts.path}/(${reName})(${reParam})*\\.(${reExt})`)
 
 	// Returns an object with params from file following pattern defined in README.md
@@ -28,7 +30,14 @@ function plugin(options) {
 		let auxParam
 		while ((auxParam = paramPattern.exec(imagename)) !== null) {
 			const paramName = auxParam[0].match(/[a-z]+/)[0]
-			const paramValue = auxParam[0].match(/[0-9,]+/)[0]
+			let paramValue = auxParam[0].match(/[0-9,]+/)[0]
+			// Special param: Width is an array
+			if ('w' === paramName) {
+				paramValue = _.map(paramValue.split(','), (val) => Number(val))
+			} else {
+				paramValue = Number(paramValue)
+			}
+
 			params[paramName] = paramValue
 		}
 
@@ -41,35 +50,59 @@ function plugin(options) {
 	}
 
 	return function(files, metalsmith, done) {
+		const tmpdir = `${metalsmith._destination}/.metalsmith-picset-generate-tmp`
+		if (!fs.existsSync(tmpdir)) {
+			fs.mkdirSync(tmpdir)
+		}
 		const promises = []
+		const removeFilenames = []
 		_.forEach(files, (file, filename) => {
 			if (picPattern.test(filename)) {
+				removeFilenames.push(filename)
 				const params = imagenameParams(filename)
-				console.log(JSON.stringify(params, null, 4))
 
-				const fullpath = `${metalsmith._source}/${filename}`
-				const newpath = `${metalsmith._source}/${opts.path}/anthony-200.jpg`
-				const jpgQuality = 80
-				// const webpQuality = 80
-				// const widths = [100, 200, 400, 800]
+				// Images for every width
+				_.forEach(params.w, (width) => {
+					const newname = `${params.name}-${width}.${params.ext}`
+					const newpath = `${opts.path}/${newname}`
+					const tmppath = `${tmpdir}/${newname}`
 
-				// Create promise to resize image
-				const promise = sharp(fullpath)
-					.resize(200)
-					.jpeg({ quality: jpgQuality })
-					.toBuffer()
+					// Create promise to resize image
+					let s = sharp(`${metalsmith._source}/${filename}`).resize(width)
+					switch (params.ext) {
+						case 'png':
+							s = s.png()
+							break
+						case 'jpg':
+							s = s.jpeg({ quality: params.jpg })
+							break
+					}
+					// TODO: Change to toBuffer and stop messing around with temp files
+					// TODO: * Could speed up runtime and simplify code
+					const promise = s.toFile(tmppath)
 
-				// TODO: Act on this single promise by saving to file
-				Promise.all([promise]).then((buffer) => {
-					console.log(`Done with: ${newpath}`)
+					// Once file is written, read it in
+					Promise.all([promise]).then((buffer) => {
+						files[newpath] = { contents: fs.readFileSync(tmppath) }
+						fs.unlink(tmppath)
+					})
+
+					// Make note of promise (we later have to ensure all are done)
+					promises.push(promise)
 				})
-
-				// Make note of promise (we later have to ensure all are done)
-				promises.push(promise)
 			}
 		})
 
 		Promise.all(promises).then((data) => {
+			// Remove original file so doesn't show up in build
+			_.forEach(removeFilenames, (filename) => {
+				delete files[filename]
+			})
+
+			// Remove temp files
+			fs.rmdirSync(tmpdir)
+
+			// All done with Metalsmith plugin
 			setImmediate(done)
 		})
 	}
