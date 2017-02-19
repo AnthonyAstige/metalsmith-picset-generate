@@ -3,46 +3,51 @@ const _ = require('lodash')
 const sharp = require('sharp')
 
 function plugin(options) {
-	return function(files, metalsmith, done) {
-		const opts = options || {}
-		if (!opts.path) {
-			opts.path = 'img/picset'
+	const opts = options || {}
+	if (!opts.path) {
+		opts.path = 'img/picset'
+	}
+
+	// TODO: Isolate these variable from global scope better?
+	const name = '[a-zA-Z-]*'
+	const param = '_[0-9,]+[a-z]+'
+	const ext = 'jpg|png|svg'
+	const picPattern = new RegExp(`${opts.path}/(${name})(${param})*\\.(${ext})`)
+
+	// Returns an object with params from file following pattern defined in README.md
+	function imagenameParams(imagename) {
+		// Non-repeating params
+		const basics = imagename.match(picPattern)
+		const params = {
+			name: basics[1],
+			ext: basics[3]
 		}
 
-		/*
-		console.log()
-		console.log('Inside: metalsmith-picset-generate')
-		console.log(opts)
-		console.log(metalsmith._source)
-		*/
+		// Repeating params
+		const paramPattern = new RegExp(`${param}`, 'g')
+		let auxParam
+		while ((auxParam = paramPattern.exec(imagename)) !== null) {
+			const paramName = auxParam[0].match(/[a-z]+/)[0]
+			const paramValue = auxParam[0].match(/[0-9,]+/)[0]
+			params[paramName] = paramValue
+		}
 
-		const name = '[a-zA-Z-]*'
-		const param = '_[0-9,]+[a-z]+'
-		const ext = 'jpg|png|svg'
-		const filePattern = new RegExp(`${opts.path}/(${name})(${param})*\\.(${ext})`, 'g')
-		console.log(`RegEx: ${filePattern}`)
+		// Return constructed params object
+		return params
+	}
 
+	return function(files, metalsmith, done) {
 		const promises = []
 		_.forEach(files, (file, filename) => {
-			if (filePattern.test(filename)) {
-				//const vals = filename.match(filePattern)
-				let m
-				while (m = filePattern.exec(filename)) {
-					console.log('IN')
-					console.log(m)
-				}
-				console.log(m)
-				//console.log(vals)
+			if (picPattern.test(filename)) {
+				const params = imagenameParams(filename)
+				console.log(JSON.stringify(params, null, 4))
+
 				const fullpath = `${metalsmith._source}/${filename}`
 				const newpath = `${metalsmith._source}/${opts.path}/anthony-200.jpg`
 				const jpgQuality = 80
 				// const webpQuality = 80
 				// const widths = [100, 200, 400, 800]
-				/*
-				console.log('FOUND ONE')
-				console.log(fullpath)
-				console.log(newpath)
-				*/
 
 				// Create promise to resize image
 				const promise = sharp(fullpath)
@@ -52,8 +57,7 @@ function plugin(options) {
 
 				// TODO: Act on this single promise by saving to file
 				Promise.all([promise]).then((buffer) => {
-					// console.log(`Done with: ${newpath}`)
-					// console.log(buffer)
+					console.log(`Done with: ${newpath}`)
 				})
 
 				// Make note of promise (we later have to ensure all are done)
@@ -62,8 +66,6 @@ function plugin(options) {
 		})
 
 		Promise.all(promises).then((data) => {
-			// console.log(data)
-			// console.log('Done with promises')
 			setImmediate(done)
 		})
 	}
