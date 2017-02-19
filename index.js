@@ -92,6 +92,7 @@ function plugin(options) {
 		})
 	}
 
+	// The actual plugin returned from `.use(...)` call
 	return function(files, metalsmith, done) {
 		const promisesToCreateImages = []
 		const removeFilenames = []
