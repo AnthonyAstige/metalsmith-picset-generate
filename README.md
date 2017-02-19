@@ -13,9 +13,16 @@ Metalsmith(__dirname)
 	.use(picsetGenerate())
 	...
 ```
-Place `picture.jpg` in your source folder under `/img/picset/`
+Place `picture_400,200,100w.jpg` in your source folder under `/img/picset/`
 
-And images will be generated relative to your source folder in `/img/picset/``
+And images will be generated relative to your source folder in `/img/picset/` with widths of 100, 200, and 400 like so:
+
+* `picture-100.jpg`
+* `picture-100.webp`
+* `picture-200.jpg`
+* `picture-200.webp`
+* `picture-400.jpg`
+* `picture-400.webp`
 
 ## Specification
 
