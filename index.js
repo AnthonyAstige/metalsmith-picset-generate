@@ -1,5 +1,6 @@
 /* eslint-disable max-statements */
 /* eslint-disable no-sync */
+// TODO: Refactor this whole thing as needed, code reviewing, ...
 const _ = require('lodash')
 const sharp = require('sharp')
 const fs = require('fs')
@@ -57,19 +58,22 @@ function plugin(options) {
 		const promises = []
 		const removeFilenames = []
 
-		function createImage(buffer, width, params) {
-			const newname = `${params.name}-${width}.${params.ext}`
+		function createImage(params) {
+			const newname = `${params.name}-${params.width}.${params.ext}`
 			const newpath = `${opts.path}/${newname}`
 			const tmppath = `${tmpdir}/${newname}`
 
 			// Create promise to create new file
-			let s = sharp(buffer).resize(width)
+			let s = sharp(params.buffer).resize(params.width)
 			switch (params.ext) {
 				case 'png':
 					s = s.png()
 					break
 				case 'jpg':
-					s = s.jpeg({ quality: params.jpg })
+					s = s.jpeg({ quality: params.quality })
+					break
+				case 'webp':
+					s = s.webp({ quality: params.quality })
 					break
 			}
 			// TODO: Change to toBuffer and stop messing around with temp files
@@ -95,9 +99,29 @@ function plugin(options) {
 				// Gather params from filename
 				const params = imagenameParams(filename)
 
+				// Set default params for new image
+				const defs = {
+					buffer: file.contents,
+					name: params.name
+				}
+
 				// Images for every width
 				_.forEach(params.w, (width) => {
-					createImage(file.contents, width, params)
+					defs.width = width
+
+					// Render every image in webp
+					createImage(_.assignIn(defs, { ext: 'webp', quality: params.webp }))
+
+					// Render every image in it's original format
+					switch (params.ext) {
+						case 'jpg':
+							createImage(
+								_.assignIn(defs, { ext: 'jpg', quality: params.jpg }))
+							break
+						case 'png':
+							createImage(_.assignIn(defs, { ext: 'png' }))
+							break
+					}
 				})
 			}
 		})
@@ -107,9 +131,6 @@ function plugin(options) {
 			_.forEach(removeFilenames, (filename) => {
 				delete files[filename]
 			})
-
-			// Remove temp files
-			fs.rmdirSync(tmpdir)
 
 			// All done with Metalsmith plugin
 			setImmediate(done)
