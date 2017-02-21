@@ -44,31 +44,38 @@ function createImage(files, params, path) {
 	const newname = `${params.name}-${params.width}.${params.ext}`
 	const newpath = `${path}/${newname}`
 
-	// Resize the image and put in appropriate format / quality
-	let s = sharp(params.buffer).resize(params.width)
-	switch (params.ext) {
-		case 'png':
-			s = s.png()
-			break
-		case 'jpg':
-			s = s.jpeg({ quality: params.quality })
-			break
-		case 'webp':
-			s = s.webp({
-				quality: params.quality,
-				lossless: (100 === params.quality)
-			})
-			break
-	}
-
 	// Return promise to actually create the buffer as new Metalsmith file
 	return new Promise((resolve, reject) => {
-		s.toBuffer((err, buffer, info) => {
-			if (err) {
-				reject(err)
+		// Resize the image and put in appropriate format / quality
+		let s = sharp(params.buffer)
+		s.metadata().then((metadata) => {
+			if (params.width > metadata.width) {
+				reject(`metalsmith-picset-generate: Trying to resize '${params.name}'\
+to ${params.width}px wide with source image of only ${metadata.width}px wide`)
 			}
-			files[newpath] = { contents: buffer }
-			resolve()
+			s.resize(params.width)
+			switch (params.ext) {
+				case 'png':
+					s = s.png()
+					break
+				case 'jpg':
+					s = s.jpeg({ quality: params.quality })
+					break
+				case 'webp':
+					s = s.webp({
+						quality: params.quality,
+						lossless: (100 === params.quality)
+					})
+					break
+			}
+
+			s.toBuffer((err, buffer, info) => {
+				if (err) {
+					reject(err)
+				}
+				files[newpath] = { contents: buffer }
+				resolve()
+			})
 		})
 	})
 }
@@ -119,10 +126,10 @@ module.exports = (options) => {
 				promisesToCreateImages.push(
 					createImage(
 						files,			// Add new image buffer to files
-						_.assignIn(
+						_.clone(_.assignIn(
 							defs,		// Options always the same
 							customOpts	// Passed in options
-						),
+						)),
 						opts.path		// Where to create the Metalsmith file
 					)
 				)
