@@ -1,6 +1,6 @@
 {
   "name": "metalsmith-picset-generate",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Generates image sets for use with metalsmith-picset-handlebars-helper to give browsers choice",
   "main": "index.js",
   "scripts": {
