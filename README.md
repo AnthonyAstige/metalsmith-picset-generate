@@ -103,7 +103,8 @@ This plugin will generate images
 
 ### Recommendations
 
-If you need optomized PNG output we recommended you add [metalsmith-optipng](https://github.com/AnthonyAstige/metalsmith-optipng) to your pipeline.
+* If you need optomized PNG output we recommended you add [metalsmith-optipng](https://github.com/AnthonyAstige/metalsmith-optipng) to your pipeline.
+* Making a .png's dimensions smaller can sometimes increase filesize due to pecularities in the format's optomization methods and (we think) resizing can add additional pallet requirments. When making responsive .png files (and presumably lossless .webp files), review file sizes carefully.
 
 ### Philosophy &amp; architecture
 
