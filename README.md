@@ -101,6 +101,10 @@ This plugin will generate images
 
 ## Background info
 
+### Recommendations
+
+If you need optomized PNG output we recommended you add [metalsmith-optipng](https://github.com/AnthonyAstige/metalsmith-optipng) to your pipeline.
+
 ### Philosophy &amp; architecture
 
 * [Convention over Configuration](https://en.wikipedia.org/wiki/Convention_over_configuration)
