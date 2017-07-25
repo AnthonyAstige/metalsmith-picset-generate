@@ -1,3 +1,5 @@
+'use strict';
+
 /* eslint-disable no-sync */
 const _ = require('lodash')
 const sharp = require('sharp')
